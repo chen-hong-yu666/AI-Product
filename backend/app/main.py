@@ -10,13 +10,18 @@ from langchain_chroma import Chroma
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from pydantic import BaseModel
 from pypdf import PdfReader
+from dotenv import load_dotenv
+load_dotenv()
 
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
+OPENROUTER_BASE_URL = os.getenv('OPENROUTER_BASE_URL', 'https://openrouter.ai/api/v1')
+OPENROUTER_CHAT_MODEL = os.getenv('OPENROUTER_CHAT_MODEL', 'openai/gpt-4o-mini')
+OPENROUTER_EMBEDDING_MODEL = os.getenv('OPENROUTER_EMBEDDING_MODEL', 'openai/text-embedding-3-small')
 CHROMA_PERSIST_DIR = os.getenv('CHROMA_PERSIST_DIR', './chroma_data')
 COLLECTION_NAME = os.getenv('CHROMA_COLLECTION', 'pdf_qa_docs')
 
-if not OPENAI_API_KEY:
-  raise RuntimeError('OPENAI_API_KEY is required')
+if not OPENROUTER_API_KEY:
+  raise RuntimeError('OPENROUTER_API_KEY is required')
 
 app = FastAPI(title='AI PDF QA API')
 
@@ -28,13 +33,22 @@ app.add_middleware(
   allow_headers=['*']
 )
 
-embeddings = OpenAIEmbeddings(model='text-embedding-3-small', api_key=OPENAI_API_KEY)
+embeddings = OpenAIEmbeddings(
+  model=OPENROUTER_EMBEDDING_MODEL,
+  api_key=OPENROUTER_API_KEY,
+  base_url=OPENROUTER_BASE_URL
+)
 vector_store = Chroma(
   collection_name=COLLECTION_NAME,
   persist_directory=CHROMA_PERSIST_DIR,
   embedding_function=embeddings
 )
-llm = ChatOpenAI(model='gpt-4o-mini', temperature=0, api_key=OPENAI_API_KEY)
+llm = ChatOpenAI(
+  model=OPENROUTER_CHAT_MODEL,
+  temperature=0,
+  api_key=OPENROUTER_API_KEY,
+  base_url=OPENROUTER_BASE_URL
+)
 splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=150)
 
 
