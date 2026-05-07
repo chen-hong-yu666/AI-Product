@@ -1,34 +1,24 @@
-# AI PDF 问答网站
+# AI PDF 学习助手（增量升级版）
 
-一个最小可运行的全栈项目：
+## 已实现能力
+- 多 PDF 知识库（上传后持久化文档元信息）
+- 基于所有 PDF 的统一检索问答
+- 每次回答返回参考来源（文件名、页码、原文片段）
+- 聊天历史持久化（刷新后可见）
+- 每个 PDF 支持一键总结（核心观点/重点知识/复习要点/预测题）
+- 更完整的三栏式学习助手 UI（左侧文档、中间聊天、底部输入）
 
-- **前端**：Next.js（聊天气泡 UI + PDF 上传 + 提问）
-- **后端**：FastAPI
-- **LLM**：OpenRouter API（OpenAI 兼容接口）
-- **向量库**：ChromaDB
-
-## 目录结构
-
-```bash
-.
-├── frontend/   # Next.js
-└── backend/    # FastAPI + ChromaDB + OpenRouter
-```
-
-## 1) 启动后端
-
+## 启动后端（FastAPI）
 ```bash
 cd backend
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
-# 编辑 .env，填入 OPENROUTER_API_KEY
 uvicorn app.main:app --reload --port 8000
 ```
 
-## 2) 启动前端
-
+## 启动前端（Next.js）
 ```bash
 cd frontend
 npm install
@@ -38,16 +28,28 @@ npm run dev
 
 访问：`http://localhost:3000`
 
-## 前端环境变量
+## 环境变量
+### backend/.env
+```bash
+OPENROUTER_API_KEY=your_openrouter_api_key_here
+OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+OPENROUTER_CHAT_MODEL=openai/gpt-4o-mini
+OPENROUTER_EMBEDDING_MODEL=openai/text-embedding-3-small
+CHROMA_PERSIST_DIR=./chroma_data
+CHROMA_COLLECTION=pdf_qa_docs
+META_STORE_PATH=./data/documents.json
+CHAT_STORE_PATH=./data/chat_history.json
+```
 
-在 `frontend/.env.local` 中配置：
-
+### frontend/.env.local
 ```bash
 NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
 ```
 
 ## API
-
-- `POST /upload`：上传 PDF，返回 `document_id`
-- `POST /ask`：根据 `document_id` + `question` 返回答案
-- `GET /health`：健康检查
+- `POST /upload` 上传单个 PDF（可重复调用，形成多文档库）
+- `GET /documents` 获取已上传 PDF 列表
+- `POST /ask` 基于全部 PDF 检索并回答
+- `GET /history` 获取聊天历史
+- `POST /documents/{document_id}/summary` 生成文档总结
+- `GET /health` 健康检查
