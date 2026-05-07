@@ -4,7 +4,7 @@
 
 - **前端**：Next.js（聊天气泡 UI + PDF 上传 + 提问）
 - **后端**：FastAPI
-- **LLM**：OpenAI API
+- **LLM**：OpenRouter API（OpenAI 兼容接口）
 - **向量库**：ChromaDB
 
 ## 目录结构
@@ -12,7 +12,7 @@
 ```bash
 .
 ├── frontend/   # Next.js
-└── backend/    # FastAPI + ChromaDB + OpenAI
+└── backend/    # FastAPI + ChromaDB + OpenRouter
 ```
 
 ## 1) 启动后端
@@ -23,7 +23,7 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
-# 编辑 .env，填入 OPENAI_API_KEY
+# 编辑 .env，填入 OPENROUTER_API_KEY
 uvicorn app.main:app --reload --port 8000
 ```
 

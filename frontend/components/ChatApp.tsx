@@ -61,7 +61,7 @@ export default function ChatApp() {
   return (
     <div className="container">
       <h1>AI PDF 问答网站</h1>
-      <p className="small">技术栈：Next.js + FastAPI + OpenAI API + ChromaDB</p>
+      <p className="small">技术栈：Next.js + FastAPI + OpenRouter API + ChromaDB</p>
 
       <div className="card" style={{ marginBottom: 16 }}>
         <h3>1) 上传 PDF</h3>
