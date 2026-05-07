@@ -1,14 +1,25 @@
-# frontend
-frontend/node_modules/
-frontend/.next/
+# env
+.env
+backend/.env
 frontend/.env.local
 
-# backend
+# dependencies/build
+node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+
+# python
+.venv/
 backend/.venv/
+__pycache__/
 backend/__pycache__/
-backend/.env
+*.pyc
+
+# vector db
+a_chroma/
+chroma_data/
 backend/chroma_data/
 
-# common
-.env
+# misc
 .DS_Store
